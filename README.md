@@ -10,4 +10,4 @@ A two-case recursion algorithm written in JavaScript, with output to an HTML5 ca
 
 **To use:**
 
-View the file `tower.html` as "raw" in your browser (online or offline).
+View the file `tower.html` as "raw" [in your browser](https://raw.githubusercontent.com/cpp-tutor/tower/refs/heads/main/tower.html) (either online or offline).
