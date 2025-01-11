@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>South-East Asian Disc Stacking Problem</title>
+        <style>
+                body {
+                background: #ffffff;
+            }
+            #canvas {
+                margin: 20px;
+                padding: 20px;
+                background: #dddddd;
+                border: thin inset #aaaaaa;
+            }
+        </style>
+    </head>
+    <body>
+        <h3 style="text-align:center">Click the display to begin</h3>
+        <script>
+            let discs = 6;
+            let canvasX = 860;
+            let canvasY = 480;
+            let discMaxWidth = canvasX / 3.5;
+            let discMinWidth = canvasX / 8;
+            document.write('<canvas id="canvas" width="' + canvasX + '" height="' + canvasY + '">');
+            document.write('Canvas not supported by this browser');
+            document.write('</canvas>');
+            var canvas = document.getElementById('canvas');
+            let from = [], spare = [], to = [];
+            let colors = [ 'red', 'yellow', 'white' ];
+            function makeDisc(size, color) {
+                return { "width": size, "color": colors[color % colors.length] };
+            }
+            function initializeDisks() {
+                from = [];
+                spare = [];
+                to = [];
+                for (var i = discs; i > 0; i--) {
+                    from.push(makeDisc(discMinWidth + (i - 1) * (discMaxWidth - discMinWidth) / (discs - 1), i));
+                }
+            }
+            function showDiscs() {
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvasX, canvasY);
+                for (var p = 0; p != 3; ++p) {
+                    var stack;
+                    switch (p) {
+                        case 0:
+                            stack = from;
+                            break;
+                        case 1:
+                            stack = spare;
+                            break;
+                        case 2:
+                            stack = to;
+                            break;
+                        default:
+                            break;
+                    }
+                    let center = (canvasX / 3) * p + canvasX / 6;
+                    let pWidth = canvasX / 4;
+                    let pThickness = 30;
+                    context.fillStyle = ('brown');
+                    context.fillRect(center - pWidth / 2, canvasY - pThickness, pWidth, pThickness);
+                    context.fillRect(center - pThickness / 2, 0, pThickness, canvasY - pThickness);
+                    let dThickness = (canvasY - 2 * pThickness) / discs;
+                    if (dThickness > pThickness * 2) {
+                        dThickness = pThickness * 2;
+                    }
+                    for (var d = 0; d != stack.length; ++d) {
+                        context.fillStyle = (stack.at(d).color);
+                        context.fillRect(center - stack.at(d).width / 2, canvasY - pThickness - (d + 1) * dThickness, stack.at(d).width, dThickness);
+                    }
+                }
+            }
+            async function moveDiscs(n, from, to, spare) {
+                if (n > from.length) {
+                    alert("Not enough discs.");
+                    return;
+                }
+                switch (n) {
+                    case 0:
+                        alert("Bad disc.");
+                        return;
+                    case 1:
+                        var disc = from.pop();
+                        if ((to.length > 0) && (disc.width >= to.at(to.length - 1).width)) {
+                            alert("Disc too big.");
+                            return;
+                        }
+                        to.push(disc);
+                        let delay = (time) => {
+                            return new Promise(res => {
+                                setTimeout(res, time)
+                            }
+                        )};
+                        await delay(500);
+                        showDiscs();
+                        break;
+                    default:
+                        await moveDiscs(n - 1, from, spare, to);
+                        await moveDiscs(1, from, to, spare);
+                        await moveDiscs(n - 1, spare, to, from);
+                        break;
+                }
+            }
+            canvas.onclick = function() {
+                initializeDisks();
+                showDiscs();
+                moveDiscs(from.length, from, to, spare);
+            };
+            initializeDisks();
+            showDiscs();
+        </script>
+     </body>
+</html>
