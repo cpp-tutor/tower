@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>South-East Asian Disc Stacking Problem</title>
+        <title>South-East Asian Disc-Stacking Problem</title>
         <style>
                 body {
                 background: #ffffff;
@@ -15,9 +15,10 @@
         </style>
     </head>
     <body>
-        <h3 style="text-align:center">Click the display to begin</h3>
+        <h3 style="text-align:center">Click the graphic to begin</h3>
         <script>
             let discs = 6;
+            let delayms = 500;
             let canvasX = 860;
             let canvasY = 480;
             let discMaxWidth = canvasX / 3.5;
@@ -75,7 +76,7 @@
             }
             async function moveDiscs(n, from, to, spare) {
                 if (n > from.length) {
-                    alert("Not enough discs.");
+                    alert("Too few discs.");
                     return;
                 }
                 switch (n) {
@@ -83,18 +84,18 @@
                         alert("Bad disc.");
                         return;
                     case 1:
-                        var disc = from.pop();
+                        let disc = from.pop();
                         if ((to.length > 0) && (disc.width >= to.at(to.length - 1).width)) {
                             alert("Disc too big.");
                             return;
                         }
                         to.push(disc);
-                        let delay = (time) => {
+                        let delay = (timeout) => {
                             return new Promise(res => {
-                                setTimeout(res, time)
+                                setTimeout(res, timeout)
                             }
                         )};
-                        await delay(500);
+                        await delay(delayms);
                         showDiscs();
                         break;
                     default:
